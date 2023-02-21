@@ -107,4 +107,28 @@ module Generator :
   end =
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
+  
+        (* TODO : Implémenter le type et tous les éléments de la signature *)
+
+    (*Initialise le générateur de nombres aléatoires*)
+    Random.self_init ();;
+
+    type 'a t = unit -> 'a
+
+    (*Permet de générer un nombre aléatoire*)
+    let next f = f ();;
+
+    (*Générateur pseudo-aléatoire d'entiers*)
+    let int a b =
+      let borne_sup = b - a + 1 in
+        let gen_int () = a + Random.int borne_sup in
+          gen_int;;
+    
   end ;;
+  
+  (*
+    APPELS DE METHODES : 
+    let gen_int a b = Generator.int a b ;;
+    Generator.next gen ;;
+
+  *)
