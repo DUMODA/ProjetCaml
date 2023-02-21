@@ -7,6 +7,7 @@ module Test :
     (** Type d'un test portant sur des éléments de type 'a *)
     type 'a t
 
+    
     (** Construit un test
       * @param gen  générateur pseudo-aléatoire de valeurs de test
       * @param red  stratégie de réduction
