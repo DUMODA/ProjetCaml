@@ -118,6 +118,9 @@ module Generator :
     (*Permet de générer un nombre aléatoire*)
     let next f = f ();;
 
+     (*Générateur constant d'une entité quelconque*)
+     let const x = fun () -> x;;
+
     (*Générateur pseudo-aléatoire d'entiers*)
     let int a b =
       let borne_sup = b - a + 1 in
