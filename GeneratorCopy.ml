@@ -8,6 +8,12 @@ module Generator :
       * @return    nouvelle valeur aléatoire en utilisant `gen`
       *)
     val next : 'a t -> 'a
+
+    (** Générateur constant
+      * @param x valeur
+      * @return  générateur de l'unique valeur `x`
+      *)
+      val const : 'a -> 'a t
     
      (** Générateur pseudo-aléatoire d'entiers
       * @param a borne inférieure
@@ -27,12 +33,18 @@ module Generator :
     (*Permet de générer un nombre aléatoire*)
     let next f = f ();;
 
+    (*Générateur constant d'une entité quelconque*)
+    let const x = fun () -> x;;
+
     (*Générateur pseudo-aléatoire d'entiers*)
     let int a b =
       let borne_sup = b - a + 1 in
         let gen_int () = a + Random.int borne_sup in
           gen_int;;
     
+
+          
+   
   end ;;
   
   (*
