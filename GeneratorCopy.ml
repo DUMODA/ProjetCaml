@@ -7,6 +7,7 @@ module Generator :
       * @param gen générateur pseudo-aléatoire
       * @return    nouvelle valeur aléatoire en utilisant `gen`
       *)
+      
     val next : 'a t -> 'a
 
     (** Générateur constant

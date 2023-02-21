@@ -118,7 +118,7 @@ module Generator :
     (*Permet de générer un nombre aléatoire*)
     let next f = f ();;
 
-     (*Générateur constant d'une entité quelconque*)
+    (*Générateur constant d'une entité quelconque*)
      let const x = fun () -> x;;
 
     (*Générateur pseudo-aléatoire d'entiers*)
