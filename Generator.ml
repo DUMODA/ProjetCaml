@@ -126,12 +126,28 @@ module Generator :
       let borne_sup = b - a + 1 in
         let gen_int () = a + Random.int borne_sup in
           gen_int;;
+
+    (*Générateur pseudo-aléatoire d'une chaine de caracteres de longueur n*)
+    let string n gen =
+      let rec gen_string acc = function
+        | 0 -> acc
+        | n -> gen_string (acc ^ String.make 1 (next gen)) (n - 1) in 
+      fun () -> gen_string "" n ;;
+
+      (* Générateur pseudo-aléatoire de couples*)
+      let combine fst_gen snd_gen = 
+        let f () = (next fst_gen, next snd_gen) in
+        f;;
+  
+      (*Applique un post-traitement à un générateur pseudo-aléatoire*)
+      let map f gen =
+        fun() -> f(next gen);;
     
   end ;;
   
   (*
     APPELS DE METHODES : 
-    let gen_int a b = Generator.int a b ;;
+    let gen_int = Generator.int a b ;;
     Generator.next gen ;;
 
   *)

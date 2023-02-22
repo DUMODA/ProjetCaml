@@ -22,6 +22,31 @@ module Generator :
       * @return  générateur pseudo-aléatoire de valeurs entières entre `a` et `b` inclus
       *)
     val int : int -> int -> int   t
+
+    (* Générateur pseudo-aléatoire de caractères *)
+    val char : char t
+
+    (** Générateur de chaînes de caractères
+      * @param n   longueur maximale de la chaîne de caractère
+      * @param gen générateur pseudo-aléatoire de caractères
+      * @return    générateur pseudo-aléatoire de chaînes de caractères dont chaque caractéré est généré avec `gen`
+      *)
+      val string : int -> char t -> string t
+
+       (** Générateur pseudo-aléatoire de couples
+      * @param fst_gen générateur pseudo-aléatoire de la première coordonnée
+      * @param snd_gen générateur pseudo-aléatoire de la deuxième coordonnée
+      * @return        générateur pseudo-aléatoire du couple
+      *)
+    val combine : 'a t -> 'b t -> ('a * 'b) t
+
+    (** Applique un post-traitement à un générateur pseudo-aléatoire
+      * @param f   post-traitement à appliquer à chaque valeur générée
+      * @param gen générateur pseudo-aléatoire
+      * @return    générateur pseudo-aléatoire obtenu en appliquant `f` à chaque valeur générée par `gen`
+      *)
+      val map : ('a -> 'b) -> 'a t -> 'b t
+
   end =
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
@@ -43,9 +68,22 @@ module Generator :
         let gen_int () = a + Random.int borne_sup in
           gen_int;;
     
+    let char =
+      fun () -> char_of_int (Random.int ((int_of_char 'z') - (int_of_char 'a')) + (int_of_char 'a'));;
 
-          
+      (*Générateur pseudo-aléatoire d'une chaine de caracteres de longueur n*)
+      let string n gen =
+        let rec gen_string acc = function
+          | 0 -> acc
+          | n -> gen_string (acc ^ String.make 1 (next gen)) (n - 1) in 
+        fun () -> gen_string "" n ;;
+
+        let combine fst_gen snd_gen = 
+          let f () = (next fst_gen, next snd_gen) in
+          f;;
    
+        let map f gen =
+          fun() -> f(next gen);;
   end ;;
   
   (*
