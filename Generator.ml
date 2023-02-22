@@ -62,7 +62,7 @@ module Generator :
       * @param gen générateur pseudo-aléatoire de caractères
       * @return    générateur pseudo-aléatoire de chaînes de caractères dont chaque caractéré est généré avec `gen`
       *)
-    (* val string : int -> char t -> string t *)
+    val string : int -> char t -> string t
 
     (* GENERATEURS DE LISTES *)
 
@@ -71,7 +71,7 @@ module Generator :
       * @param gen générateur pseudo-aléatoire d'éléments
       * @return    générateur pseudo-aléatoire de listes dont chaque élément est généré avec `gen`
       *)
-    (* val list : int -> 'a t -> ('a list) t *)
+    val list : int -> 'a t -> ('a list) t
 
     (* TRANSFORMATIONS *)
 
@@ -80,21 +80,21 @@ module Generator :
       * @param snd_gen générateur pseudo-aléatoire de la deuxième coordonnée
       * @return        générateur pseudo-aléatoire du couple
       *)
-    (* val combine : 'a t -> 'b t -> ('a * 'b) t *)
+    val combine : 'a t -> 'b t -> ('a * 'b) t
 
     (** Applique un post-traitement à un générateur pseudo-aléatoire
       * @param f   post-traitement à appliquer à chaque valeur générée
       * @param gen générateur pseudo-aléatoire
       * @return    générateur pseudo-aléatoire obtenu en appliquant `f` à chaque valeur générée par `gen`
       *)
-    (* val map : ('a -> 'b) -> 'a t -> 'b t *)
+    val map : ('a -> 'b) -> 'a t -> 'b t
 
     (** Applique un filtre à un générateur pseudo-aléatoire
       * @param p   filtre à appliquer à chaque valeur générée
       * @param gen générateur pseudo-aléatoire
       * @return    générateur pseudo-aléatoire ne générant des valeurs de `gen` que si elles vérifient `p`
       *)
-    (* val filter : ('a -> bool) -> 'a t -> 'a t *)
+    val filter : ('a -> bool) -> 'a t -> 'a t
 
     (** Applique un post-traitement dépendant d'un filtre à un générateur pseudo-aléatoire
       * @param p   filtre à appliquer à chaque valeur générée
@@ -103,7 +103,7 @@ module Generator :
       * @return    générateur pseudo-aléatoire obtenu en appliquant `fst f` pour toute valeur vérifiant `p`
       *                                                          et `snd f` pour toute valeur ne le vérifiant pas
       *)
-    (* val partitioned_map : ('a -> bool) -> (('a -> 'b) * ('a -> 'b)) -> 'a t -> 'b t *)
+    val partitioned_map : ('a -> bool) -> (('a -> 'b) * ('a -> 'b)) -> 'a t -> 'b t
   end =
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
@@ -149,11 +149,14 @@ module Generator :
       fun () -> let alphanum_str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" in
         let i = Random.int (String.length alphanum_str) in alphanum_str.[i];;
 
-    (* let alphanum = 
-      fun () -> let n = Random.int 62 in
-        if n < 26 then Char.chr (Char.code 'a' + n)
-        else if n < 52 then Char.chr (Char.code 'A' + n - 26)
-        else Char.chr (Char.code '0' + n - 52);; *)
+    (* 
+       Autre méthode pour alphanum :
+         let alphanum = 
+           fun () -> let n = Random.int 62 in
+             if n < 26 then Char.chr (Char.code 'a' + n)
+             else if n < 52 then Char.chr (Char.code 'A' + n - 26)
+             else Char.chr (Char.code '0' + n - 52);;
+    *)
 
     
 
