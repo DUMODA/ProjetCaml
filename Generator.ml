@@ -104,7 +104,7 @@ module Generator :
       *                                                          et `snd f` pour toute valeur ne le vérifiant pas
       *)
     val partitioned_map : ('a -> bool) -> (('a -> 'b) * ('a -> 'b)) -> 'a t -> 'b t
-  end =
+  end = 
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
 
