@@ -116,6 +116,7 @@ module Generator :
     (* Permet de générer un nombre aléatoire *)
     let next f = f ();;
 
+    (* Générateur de constante *)
     let const x () = x;;
 
     (* Générateur pseudo-aléatoire de booléens *)
@@ -158,6 +159,12 @@ module Generator :
              else Char.chr (Char.code '0' + n - 52);;
     *)
 
+    (* Générateur de listes d'éléments de taille n *)
+    let list n gen = 
+      let rec gen_list acc i =
+        if i <= 0 then acc
+        else gen_list ((next gen) :: acc) (i-1) in
+        fun () -> gen_list [] n;;
     
 
   end ;;
