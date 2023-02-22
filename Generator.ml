@@ -108,38 +108,86 @@ module Generator :
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
 
-    (*Initialise le générateur de nombres aléatoires*)
+    (* Initialise le générateur de nombres aléatoires *)
     Random.self_init ();;
 
+
+    (* Type du générateur pseudo-aléatoire de données de type 'a *)
     type 'a t = unit -> 'a ;;
+
 
     (* Permet de générer un nombre aléatoire *)
     let next f = f ();;
 
-    (*Générateur constant d'une entité quelconque*)
-     let const x = fun () -> x;;  
 
-    (*Générateur pseudo-aléatoire d'entiers*)
+    (* Générateur constant d'une entité quelconque *)
+    let const x = fun () -> x;;  
+
+
+    (* Générateur pseudo-aléatoire de booléens *)
+    let bool prob =
+      fun () -> Random.float 1.0 <= prob;;
+
+
+    (* Générateur pseudo-aléatoire d'entiers sur l'intervalle [a, b] *)
     let int a b =
       let borne_sup = b - a + 1 in
         let gen_int () = a + Random.int borne_sup in
           gen_int;;
 
-    (*Générateur pseudo-aléatoire d'une chaine de caracteres de longueur n*)
+    
+    (* Générateur pseudo-aléatoire d'entiers sur l'intervalle [0, n] *)
+    let int_nonneg n =
+      fun () -> Random.int (n + 1);;
+
+    
+    (* Générateur pseudo-aléatoire de flottants sur l'intervalle [x, y] *)
+    let float x y =
+      let borne_sup = y -. x +. 1. in
+        let gen_float () = x +. Random.float (y -. x) in gen_float;;
+
+    
+    (* Générateur pseudo-aléatoire de flottants sur l'intervalle [0, x] *)
+    let float_nonneg x = 
+      fun () -> Random.float (x +. 1.);;
+    
+
+    (* Générateur pseudo-aléatoire de caractères *)
+    let char =
+      fun () -> char_of_int (Random.int ((int_of_char 'z') - (int_of_char 'a')) + (int_of_char 'a'));;
+    
+
+    (* Générateur pseudo-aléatoire de caractères alphanumériques *)
+    let alphanum = 
+      fun () -> let alphanum_str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" in
+        let i = Random.int (String.length alphanum_str) in alphanum_str.[i];;
+
+    
+    (* Générateur pseudo-aléatoire d'une chaine de caracteres de longueur n *)
     let string n gen =
       let rec gen_string acc = function
         | 0 -> acc
         | n -> gen_string (acc ^ String.make 1 (next gen)) (n - 1) in 
       fun () -> gen_string "" n ;;
 
-      (* Générateur pseudo-aléatoire de couples*)
-      let combine fst_gen snd_gen = 
-        let f () = (next fst_gen, next snd_gen) in
-        f;;
-  
-      (*Applique un post-traitement à un générateur pseudo-aléatoire*)
-      let map f gen =
-        fun() -> f(next gen);;
+
+    (* Générateur de listes d'éléments de taille n *)
+    let list n gen = 
+      let rec gen_list acc i =
+        if i <= 0 then acc
+        else gen_list ((next gen) :: acc) (i-1) in
+        fun () -> gen_list [] n;;
+
+
+    (* Générateur pseudo-aléatoire de couples *)
+    let combine fst_gen snd_gen = 
+      let f () = (next fst_gen, next snd_gen) in
+      f;;
+
+
+    (* Applique un post-traitement à un générateur pseudo-aléatoire *)
+    let map f gen =
+      fun() -> f(next gen);;
     
   end ;;
   
