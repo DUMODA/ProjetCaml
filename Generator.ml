@@ -135,6 +135,11 @@ module Generator :
         let gen_int () = a + Random.int borne_sup in
           gen_int;;
 
+    (*
+      Si non négatif, mettre le mettre entre paranthèse
+      ex : let neg_range = Geneerator.int (-100) (-50);;
+    *)
+    
     
     (* Générateur pseudo-aléatoire d'entiers sur l'intervalle [0, n] *)
     let int_nonneg n =
@@ -143,8 +148,8 @@ module Generator :
     
     (* Générateur pseudo-aléatoire de flottants sur l'intervalle [x, y] *)
     let float x y =
-      let borne_sup = y -. x +. 1. in
-        let gen_float () = x +. Random.float (y -. x) in gen_float;;
+      let borne_sup = y -. x in
+        let gen_float () = x +. Random.float borne_sup in gen_float;;
 
     
     (* Générateur pseudo-aléatoire de flottants sur l'intervalle [0, x] *)
@@ -189,6 +194,30 @@ module Generator :
     let map f gen =
       fun() -> f(next gen);;
     
+    
+    (* Applique un filtre p à un générateur pseudo-aléatoire *)
+    let filter p gen = fun () ->
+      let rec gen_filter () =
+        let x = gen () in
+          if p x then x
+          else gen_filter ()
+      in gen_filter ();;
+
+
+    let partitioned_map p (fst_fun, snd_fun) gen =
+      fun () ->
+        let x = gen () in
+        if p x then fst_fun x 
+        else snd_fun x
+  
+  (* 
+    let partmap = Generator.partitioned_map (fun x -> print_endline (string_of_int x); x mod 2 = 0) ((fun x -> x * 2),(fun x -> x - 1)) (Generator.int 0 100);;
+    let test = Generator.next partmap;;
+
+    let partmap = Generator.partitioned_map (fun x -> print_endline (string_of_float x); x > 25.) ((fun x -> x *. 2.),(fun x -> x -. 1.)) (Generator.float 0. 50.);;
+    let test = Generator.next partmap;;
+  *)
+
   end ;;
   
   
