@@ -104,6 +104,29 @@ module Generator :
       *                                                          et `snd f` pour toute valeur ne le vérifiant pas
       *)
     val partitioned_map : ('a -> bool) -> (('a -> 'b) * ('a -> 'b)) -> 'a t -> 'b t
+
+
+
+    (*FONCTIONNALTÉS SUPPLEMENTAIRES*)
+
+    (** Definit la graine de génération aléatoire
+      * @param seed   graine de génération aléatoire
+      *)
+    val set_seed : int -> unit
+
+    (** Reinitialise la graine de génération aléatoire
+      *)
+    val reset_seed : unit -> unit
+    
+    (** Générateur pseudo-aléatoire d'un tableau d'éléments de type 'a
+    * @param n taille du tableau
+    * @return  générateur pseudo-aléatoire d'un tableau d'éléments de type 'a
+    *)
+    val array : int -> 'a t -> ('a array) t
+
+    val shuffle : 'a list -> 'a list
+
+
   end = 
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
@@ -208,8 +231,21 @@ module Generator :
       fun () ->
         let x = gen () in
         if p x then fst_fun x 
-        else snd_fun x
-  
+        else snd_fun x;;
+
+    let set_seed seed = Random.init seed ;;
+
+    let reset_seed () =
+      Random.self_init ();;
+
+    let array n gen = 
+      fun() -> Array.init n (fun _ -> next gen) ;;
+    
+    let shuffle list =
+      let pair = List.map (fun x -> (Random.bits (), x)) list in
+        let mix = List.sort compare pair in
+          List.map snd mix
+                
   (* 
     let partmap = Generator.partitioned_map (fun x -> print_endline (string_of_int x); x mod 2 = 0) ((fun x -> x * 2),(fun x -> x - 1)) (Generator.int 0 100);;
     let test = Generator.next partmap;;
