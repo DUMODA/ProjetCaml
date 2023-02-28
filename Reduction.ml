@@ -99,6 +99,6 @@ struct
   
   (* Stratégie de réduction sur les entiers positiifs *)
   let int_nonneg n = 
-    List.filter (fun x -> x >= 0) (int n);;  
+    List.filter (fun x -> x >= 0) (int n);;   
       
 end ;;
