@@ -16,4 +16,6 @@ module Property :
     type 'a t = 'a -> bool ;;
 
     (* TODO : Implémenter tous les éléments de la signature manquants *)
+    let always_true = true ;;
+    let always_false = false ;;
   end ;;
