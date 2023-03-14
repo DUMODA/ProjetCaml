@@ -86,7 +86,6 @@ end =
 struct
   Random.self_init ();;
 
-
   type 'a t = 'a -> 'a list ;;
 
   (* La stratégie vide *)
@@ -95,10 +94,34 @@ struct
   (* Stratégie de réduction sur les entiers *)
   let int n = 
     let rec range a b =
-      a :: range (a+1) b in range (-(abs n)) (abs n);;
+      if a > b then empty()
+      else a :: range (a+1) b in range (-(abs n)) (abs n);;
   
   (* Stratégie de réduction sur les entiers positiifs *)
   let int_nonneg n = 
-    List.filter (fun x -> x >= 0) (int n);;  
+    let rec range a b =
+      if a > b then empty()
+      else a :: range (a+1) b in (range 0 n);;  
+
+  (* Stratégie de réduction sur les flottants *)
+  let float x =
+    let rec range a b =
+      if a > b then empty()
+      else a :: range (a +. 1.) b in range (-. (abs_float x)) (abs_float x);;
+
+  (* Stratégie de réduction sur les flottants positifs *)
+  let float_nonneg x =
+    let rec range a b =
+      if a > b then empty()
+      else a :: range (a +. 1.) b in (range 0. x);; 
+
+  (* Stratégie de réduction sur les caractères alphanumériques *)
+  let rec alphanum c =
+    if c = '0' then empty() 
+    else let previous_c = (char_of_int(int_of_char(c) - 1)) in
+      if ((int_of_char(previous_c) > 57 && int_of_char(previous_c) < 65) ||
+          (int_of_char(previous_c) > 90 && int_of_char(previous_c) < 97))
+      then alphanum previous_c 
+      else List.append (alphanum previous_c) [previous_c];;
       
 end ;;
