@@ -10,10 +10,11 @@ module Test :
     (** Construit un test
       * @param gen  générateur pseudo-aléatoire de valeurs de test
       * @param red  stratégie de réduction
+      * @param name nom du test
       * @param prop propriété qui fait l'objet du test
       * @return     test créé
       *)
-    val make_test : 'a Generator.t -> 'a Reduction.t -> 'a Property.t -> 'a t
+    val make_test : 'a Generator.t -> 'a Reduction.t -> string -> 'a Property.t -> 'a t
 
     (** Effectue un test
       * @param n    nombre de valeurs à tester
@@ -38,5 +39,4 @@ module Test :
   end =
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
-    
   end ;;
