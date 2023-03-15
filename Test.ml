@@ -38,4 +38,5 @@ module Test :
   end =
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
+    
   end ;;
