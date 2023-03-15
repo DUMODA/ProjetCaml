@@ -101,29 +101,36 @@ struct
   let int_nonneg n = 
     List.filter (fun x -> x >= 0) (int n);;
    
+  (* Stratégie de réduction sur les flottants *)
+  let float x =
+    let rec range a b =
+      if a > b then empty()
+      else a :: range (a +. 1.) b in range (-. (abs_float x)) (abs_float x);;
+
+  (* Stratégie de réduction sur les flottants positifs *)
+  let float_nonneg x =
+    let rec range a b =
+      if a > b then empty()
+      else a :: range (a +. 1.) b in (range 0. x);; 
+
   let char c =
     let lowercase = Char.lowercase_ascii c in
       let uppercase = Char.uppercase_ascii c in
         if lowercase = c then [c; uppercase]
           else if uppercase = c then [c; lowercase]
             else [c];;
-      
-  let alphanum c =
-    let code = Char.code c in
-      let codes =
-        let range a b = List.init (b - a + 1) (fun i -> a + i) in
-          let is_digit = code >= 48 && code <= 57 in
-            let is_uppercase = code >= 65 && code <= 90 in
-              let is_lowercase = code >= 97 && code <= 122 in
-                match is_digit, is_uppercase, is_lowercase with
-                  | true, _, _ -> let digits = range 48 57 in
-                    digits @ range (code+1) 57 @ range 48 (code-1)
-                  | _, true, _ -> let uppercase_letters = range 65 90 in
-                    uppercase_letters @ range (code+1) 90 @ range 65 (code-1)
-                  | _, _, true -> let lowercase_letters = range 97 122 in
-                    lowercase_letters @ range (code+1) 122 @ range 97 (code-1)
-                  | _, _, _ -> []
-      in List.map Char.chr codes;;
+  
+  (* Stratégie de réduction sur les caractères alphanumériques *)
+  let rec alphanum c =
+    let previous_c = (char_of_int(int_of_char(c) - 1)) in
+      if (int_of_char(c) > 48 && int_of_char(c) < 58) then
+        List.append (alphanum previous_c) [previous_c]
+      else if (int_of_char(c) > 65 && int_of_char(c) < 91) then
+        List.append (alphanum previous_c) [previous_c]
+      else if (int_of_char(c) > 97 && int_of_char(c) < 123) then
+        List.append (alphanum previous_c) [previous_c]
+      else empty();;
+  
   
   let string red s =
     let n = String.length s in
