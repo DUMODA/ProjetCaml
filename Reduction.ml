@@ -86,7 +86,6 @@ end =
 struct
   Random.self_init ();;
 
-
   type 'a t = 'a -> 'a list ;;
 
   (* La stratégie vide *)
@@ -131,7 +130,7 @@ struct
         List.append (alphanum previous_c) [previous_c]
       else empty();;
   
-  
+  (* Stratégie de réduction sur les chaînes de caractères *)
   let string red s =
     let n = String.length s in
     let rec aux acc i =
@@ -142,23 +141,25 @@ struct
         aux (acc @ acc2) (i+1)
       in List.rev(aux [s] 0);;
   
-    let rec list red l = match l with
-      | [] -> [[]]
-      | x :: xs ->
-        let rest = list red xs in
-          let head = red x in
-            List.concat (List.map (fun h -> List.map (fun r -> h :: r) rest) head);;
+  (* Stratégie de réduction sur les listes *)
+  let rec list red l = match l with
+    | [] -> [[]]
+    | x :: xs ->
+      let rest = list red xs in
+        let head = red x in
+          List.concat (List.map (fun h -> List.map (fun r -> h :: r) rest) head);;
   
-    let combine fst_red snd_red (x, y) =
-      List.map (fun x' -> (x', y)) (fst_red x) @ List.map (fun y' -> (x, y')) (snd_red y);;
-    
-    
-    let filter p red x =
-      let rec aux acc = function
-        | [] -> acc
-        | hd :: tl ->
-          if p hd then aux (hd :: acc) tl
-          else aux acc tl
-        in List.rev(aux [] (red x));;
+  (* Stratégie de réduction sur les couples *)
+  let combine fst_red snd_red (x, y) =
+    List.map (fun x' -> (x', y)) (fst_red x) @ List.map (fun y' -> (x, y')) (snd_red y);;
+  
+  (* Applique un filtre à une stratégie de réduction *)
+  let filter p red x =
+    let rec aux acc = function
+      | [] -> acc
+      | hd :: tl ->
+        if p hd then aux (hd :: acc) tl
+        else aux acc tl
+      in List.rev(aux [] (red x));;
       
 end ;;
