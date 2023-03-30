@@ -37,6 +37,40 @@ module Test :
       *)
     val execute : int -> ('a t) list -> ('a t * 'a option) list
   end =
-  struct
-    (* TODO : Implémenter le type et tous les éléments de la signature *)
+
+    struct
+      (* TODO : Implémenter le type et tous les éléments de la signature *)
+
+      type 'a t = {
+      gen : 'a Generator.t;
+      red : 'a Reduction.t;
+      name : string;
+      prop : 'a Property.t;
+    }
+
+    let make_test gen red name prop =
+      {gen = gen; red = red; name = name; prop = prop}
+
+    (* let check n test =
+      let rec loop i =
+        if i >= n then true
+        else match test.prop (test.gen ()) with
+          | false -> false
+          | true -> loop (i + 1)
+      in
+      if n <= 0 then false else loop 0 *)
+
+    let check n test =
+      let rec loop i =
+        if i >= n then true
+        else
+          let value = test.gen () in
+          let reduced = test.red value test.prop in
+          match test.prop reduced with
+          | false -> false
+          | true -> loop (i + 1)
+      in
+      if n <= 0 then false else loop 0
+    
+      
   end ;;
