@@ -54,15 +54,15 @@ module Test :
     (* Effectue un test *)
     let check n test =
       let rec loop i =
-        if i > 0 then true
+        if i = 0 then true
         else let value = Generator.next test.gen in
-          if test.prop value then true
+          if not (test.prop value) then false
           else loop (i-1) in loop n
 
     (* Cherche une valeur simple ne vérifiant pas la propriété *)
     let fails_at n test =
       let rec loop i =
-        if i = n then None
+        if i >= n then None
         else let value = Generator.next test.gen in
           if not (test.prop value) then Some value
           else loop (i+1) in loop 0
