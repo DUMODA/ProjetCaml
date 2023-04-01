@@ -37,40 +37,40 @@ module Test :
       *)
     val execute : int -> ('a t) list -> ('a t * 'a option) list
   end =
+  struct
+    (* TODO : Implémenter le type et tous les éléments de la signature *)
 
-    struct
-      (* TODO : Implémenter le type et tous les éléments de la signature *)
-
-      type 'a t = {
+    (* Type d'un test portant sur des éléments de type 'a *)
+    type 'a t = {
       gen : 'a Generator.t;
       red : 'a Reduction.t;
       name : string;
       prop : 'a Property.t;
     }
 
-    let make_test gen red name prop =
-      {gen = gen; red = red; name = name; prop = prop}
-
-    (* let check n test =
-      let rec loop i =
-        if i >= n then true
-        else match test.prop (test.gen ()) with
-          | false -> false
-          | true -> loop (i + 1)
-      in
-      if n <= 0 then false else loop 0 *)
-
+    (* Construit un test *)
+    let make_test gen red name prop = {gen = gen; red = red; name = name; prop = prop}
+    
+    (* Effectue un test *)
     let check n test =
       let rec loop i =
-        if i >= n then true
-        else
-          let value = test.gen () in
-          let reduced = test.red value test.prop in
-          match test.prop reduced with
-          | false -> false
-          | true -> loop (i + 1)
-      in
-      if n <= 0 then false else loop 0
-    
-      
+        if i > 0 then true
+        else let value = Generator.next test.gen in
+          if test.prop value then true
+          else loop (i-1) in loop n
+
+    (* Cherche une valeur simple ne vérifiant pas la propriété *)
+    let fails_at n test =
+      let rec loop i =
+        if i = n then None
+        else let value = Generator.next test.gen in
+          if not (test.prop value) then Some value
+          else loop (i+1) in loop 0
+
+    (* Exécute plusieurs tests *)
+    let execute n tests =
+      let fails_list = List.map (fun test -> [fails_at n test]) tests in
+      let fails = List.concat fails_list in
+        List.combine tests fails
+
   end ;;
