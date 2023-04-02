@@ -6,9 +6,9 @@ let rec factorielle n =
   | 0 -> 1
   | _ -> n * factorielle (n - 1)
 
-(* Tests pour la fonction factoriellele *)
-let gen_nonneg_int = Generator.int 1 10;;
-let red_factorielle = Reduction.int;;
+(* Tests pour la fonction factorielle *)
+let gen_nonneg_int = Generator.int_nonneg 10;;
+let red_factorielle = Reduction.int_nonneg;;
 let test_factorielle = Test.make_test gen_nonneg_int red_factorielle;;
 
 (*Construction des tests*)
