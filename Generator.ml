@@ -124,13 +124,11 @@ module Generator :
     *)
     val array : int -> 'a t -> ('a array) t
 
-    val shuffle : 'a list -> 'a list
-
-
   end = 
   struct
     (* TODO : Implémenter le type et tous les éléments de la signature *)
 
+    
     (* Initialise le générateur de nombres aléatoires *)
     Random.self_init ();;
 
@@ -158,17 +156,12 @@ module Generator :
         let gen_int () = a + Random.int borne_sup in
           gen_int;;
 
-    (*
-      Si non négatif, mettre le mettre entre paranthèse
-      ex : let neg_range = Geneerator.int (-100) (-50);;
-    *)
-    
-    
+
     (* Générateur pseudo-aléatoire d'entiers sur l'intervalle [0, n] *)
     let int_nonneg n =
       fun () -> Random.int (n + 1);;
 
-    
+ 
     (* Générateur pseudo-aléatoire de flottants sur l'intervalle [x, y] *)
     let float x y =
       let borne_sup = y -. x in
@@ -188,7 +181,7 @@ module Generator :
     (* Générateur pseudo-aléatoire de caractères alphanumériques *)
     let alphanum = 
       fun () -> let alphanum_str = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" in
-        let i = Random.int (String.length alphanum_str) in alphanum_str.[i];;
+        let i = Random.int (String.length alphanum_str) in (String.get alphanum_str i);;
 
     
     (* Générateur pseudo-aléatoire d'une chaine de caracteres de longueur n *)
@@ -226,31 +219,25 @@ module Generator :
           else gen_filter ()
       in gen_filter ();;
 
-
+    
+    (* Applique un post-traitement dépendant d'un filtre à un générateur pseudo-aléatoire *)
     let partitioned_map p (fst_fun, snd_fun) gen =
       fun () ->
         let x = gen () in
         if p x then fst_fun x 
         else snd_fun x;;
 
+
+    (* Definit la graine de génération aléatoire*)
     let set_seed seed = Random.init seed ;;
 
+
+    (* Reinitialise la graine de génération aléatoire*)
     let reset_seed () =
       Random.self_init ();;
 
+
+    (* Générateur pseudo-aléatoire d'un tableau d'éléments de type 'a*)
     let array n gen = 
       fun() -> Array.init n (fun _ -> next gen) ;;
-    
-    let shuffle list =
-      let pair = List.map (fun x -> (Random.bits (), x)) list in
-        let mix = List.sort compare pair in
-          List.map snd mix
-                
-  (* 
-    let partmap = Generator.partitioned_map (fun x -> print_endline (string_of_int x); x mod 2 = 0) ((fun x -> x * 2),(fun x -> x - 1)) (Generator.int 0 100);;
-    let test = Generator.next partmap;;
-    let partmap = Generator.partitioned_map (fun x -> print_endline (string_of_float x); x > 25.) ((fun x -> x *. 2.),(fun x -> x -. 1.)) (Generator.float 0. 50.);;
-    let test = Generator.next partmap;;
-  *)
-
   end ;;
