@@ -130,7 +130,8 @@ struct
   (* Stratégie de réduction sur les chaînes de caractères *)
   let string red s =
     let n = String.length s in
-      let rec loop acc i =
+      if n = 0 then empty()
+      else let rec loop acc i =
         if i >= (n-1) then acc
         else loop (String.sub s 0 (n-i-1)::acc) (i+1) in
           loop [String.sub s 0 (n-1)] 1;;
