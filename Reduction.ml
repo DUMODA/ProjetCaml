@@ -96,7 +96,7 @@ struct
     let rec range a b =
       a :: range (a+1) b in range (-(abs n)) (abs n);; 
   
-  (* Stratégie de réduction sur les entiers positiifs *)
+  (* Stratégie de réduction sur les entiers positifs *)
   let int_nonneg n = 
     List.filter (fun x -> x >= 0) (int n);;
    
@@ -112,34 +112,28 @@ struct
       if a > b then empty()
       else a :: range (a +. 1.) b in (range 0. x);; 
 
-  let char c =
-    let lowercase = Char.lowercase_ascii c in
-      let uppercase = Char.uppercase_ascii c in
-        if lowercase = c then [c; uppercase]
-          else if uppercase = c then [c; lowercase]
-            else [c];;
+  let rec char c =
+    let previous_c = (char_of_int(int_of_char(c) - 1)) in
+      if (int_of_char(c) > 65 && int_of_char(c) < 91) then
+        List.append (char previous_c) [previous_c]
+      else if (int_of_char(c) > 97 && int_of_char(c) < 123) then
+        List.append (char previous_c) [previous_c]
+      else empty();;
   
   (* Stratégie de réduction sur les caractères alphanumériques *)
   let rec alphanum c =
     let previous_c = (char_of_int(int_of_char(c) - 1)) in
       if (int_of_char(c) > 48 && int_of_char(c) < 58) then
         List.append (alphanum previous_c) [previous_c]
-      else if (int_of_char(c) > 65 && int_of_char(c) < 91) then
-        List.append (alphanum previous_c) [previous_c]
-      else if (int_of_char(c) > 97 && int_of_char(c) < 123) then
-        List.append (alphanum previous_c) [previous_c]
-      else empty();;
+      else char c;;
   
   (* Stratégie de réduction sur les chaînes de caractères *)
   let string red s =
     let n = String.length s in
-    let rec aux acc i =
-      if i >= n then acc
-      else
-        let x = red s.[i] in
-          let acc2 = List.map (fun c -> (String.make 1 c)) x in
-        aux (acc @ acc2) (i+1)
-      in List.rev(aux [s] 0);;
+      let rec loop acc i =
+        if i >= (n-1) then acc
+        else loop (String.sub s 0 (n-i-1)::acc) (i+1) in
+          loop [String.sub s 0 (n-1)] 1;;
   
   (* Stratégie de réduction sur les listes *)
   let rec list red l = match l with
