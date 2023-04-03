@@ -115,12 +115,15 @@ struct
   (* Stratégie de réduction sur les entiers *)
   let int n = 
     let rec range a b =
-      a :: range (a+1) b in range (-(abs n)) (abs n);; 
+      if a > b then empty()
+      else a :: range (a + 1) b in range (- (abs n)) (abs n);;
   
 
-  (* Stratégie de réduction sur les entiers positiifs *)
+  (* Stratégie de réduction sur les entiers positifs *)
   let int_nonneg n = 
-    List.filter (fun x -> x >= 0) (int n);;
+    let rec range a b =
+      if a > b then empty()
+      else a :: range (a + 1) b in (range 0 n);; 
    
 
   (* Stratégie de réduction sur les flottants *)
